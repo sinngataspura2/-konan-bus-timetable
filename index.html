@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>湖南市バス時刻表</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #f0f0f0; }
+  </style>
+</head>
+<body>
+  <h1>湖南市バス時刻表</h1>
+  <div id="timetable-container">読み込み中...</div>
+
+  <script>
+    fetch('timetable.json')
+      .then(response => response.json())
+      .then(data => {
+        const stops = [...new Set(data.map(item => item.stop))];
+        const timesByStop = {};
+
+        stops.forEach(stop => {
+          timesByStop[stop] = data
+            .filter(item => item.stop === stop)
+            .map(item => item.time)
+            .filter(t => t !== '―' && t !== ''); // 空白除外
+        });
+
+        const table = document.createElement('table');
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+
+        headerRow.innerHTML = `<th>バス停</th><th>時刻（便）</th>`;
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+        for (const stop in timesByStop) {
+          const row = document.createElement('tr');
+          row.innerHTML = `<td>${stop}</td><td>${timesByStop[stop].join(', ')}</td>`;
+          tbody.appendChild(row);
+        }
+
+        table.appendChild(tbody);
+        const container = document.getElementById('timetable-container');
+        container.innerHTML = '';
+        container.appendChild(table);
+      })
+      .catch(error => {
+        document.getElementById('timetable-container').innerText = '読み込みに失敗しました。';
+        console.error(error);
+      });
+  </script>
+</body>
+</html>
