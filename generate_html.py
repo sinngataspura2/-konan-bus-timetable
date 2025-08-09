@@ -1,7 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-URL = "https://www.city.shiga-konan.lg.jp/soshiki/kensetsu_keizai/toshi_seisaku/2_3/36890.html"
+URL = "https://api.codetabs.com/v1/proxy/?quest=https://www.city.shiga-konan.lg.jp/soshiki/kensetsu_keizai/toshi_seisaku/2_3/36890.html"
 
 def fetch_timetable():
     response = requests.get(URL)
